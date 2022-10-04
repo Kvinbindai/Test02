@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
@@ -9,6 +9,7 @@ function App() {
   const [row,setRow] = useState([])
   const [checkEditItem,setCheckEditItem]= useState(false)
   const [editId,setEditId] = useState('')
+  const [checkValid,setCheckValid] = useState(false)
   const submitData=(e)=>{
     e.preventDefault();
     if(checkEditItem){
@@ -29,6 +30,7 @@ function App() {
       setPassword('')
       setEditId('')
       setCheckEditItem(false)
+      
     }
     else{
       const newItem = {
@@ -41,6 +43,7 @@ function App() {
     setEmail('')
     setUsername('')
     setPassword('')
+    setCheckValid(false)
     }
   }
   const removeItem=(id)=>{
@@ -55,6 +58,13 @@ function App() {
     setUsername(editRow.username)
     setPassword(editRow.password)
   }
+  useEffect(()=>{
+    if(!email || !username || !password){
+      setCheckValid(true)
+    }else{
+      setCheckValid(false)
+    }
+  },[email,username,password])
   return (
     <div className='container'>
       <div className='form-container'>
@@ -87,7 +97,7 @@ function App() {
                 value={password}
                 />
             </div>
-            <button type='submit' id='btn'>{ checkEditItem ? 'Save Item' : 'Sign up' }</button>
+            <button type='submit' id='btn' disabled={checkValid}>{ checkEditItem ? 'Save Item' : 'Sign up' }</button>
         </form>
       </div>
       <table>
