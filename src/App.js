@@ -1,15 +1,18 @@
 import { v4 as uuidv4 } from 'uuid';
 import { useEffect, useState } from 'react';
 import './App.css';
-
+import tableUser from './data/Data'
 function App() {
   const [email,setEmail] = useState('')
   const [username,setUsername] = useState('')
   const [password,setPassword] = useState('')
-  const [row,setRow] = useState([])
+  const [row,setRow] = useState([...tableUser])
   const [checkEditItem,setCheckEditItem]= useState(false)
   const [editId,setEditId] = useState('')
   const [checkValid,setCheckValid] = useState(false)
+  const [gender,setGender] = useState('')
+  const [filter,setFilter] = useState('')
+
   const submitData=(e)=>{
     e.preventDefault();
     if(checkEditItem){
@@ -19,7 +22,8 @@ function App() {
             ...item,
             email,
             username,
-            password
+            password,
+            gender
           }
         }
         return item
@@ -28,21 +32,23 @@ function App() {
       setEmail('')
       setUsername('')
       setPassword('')
+      setGender('')
       setEditId('')
       setCheckEditItem(false)
-      
     }
     else{
       const newItem = {
       id : uuidv4(),
       email,
       username,
-      password
+      password,
+      gender
     }
     setRow([...row,newItem])
     setEmail('')
     setUsername('')
     setPassword('')
+    setGender('')
     setCheckValid(false)
     }
   }
@@ -57,14 +63,27 @@ function App() {
     setEmail(editRow.email)
     setUsername(editRow.username)
     setPassword(editRow.password)
+    setGender(editRow.gender)
   }
+  
   useEffect(()=>{
     if(!email || !username || !password){
       setCheckValid(true)
     }else{
       setCheckValid(false)
     }
+    // if(filter === 'Male'){
+    //    setFilterArray(row.filter(e=>e.gender === 'Male'))
+    // }
+    // if(filter === 'Female'){
+    //   setFilterArray(row.filter(e=>e.gender === 'Female'))   
+    // }
+    // if(filter === ''){
+    //   setFilterArray(row)
+    // }
   },[email,username,password])
+
+
   return (
     <div className='container'>
       <div className='form-container'>
@@ -97,8 +116,28 @@ function App() {
                 value={password}
                 />
             </div>
+            <div className='gender'>
+              <label>Gender : </label>
+              <div onChange={(e)=>setGender(e.target.value)}>
+                <input type='radio' name='gender' value='Male' /><label htmlFor="male">Male</label>
+                <input type='radio' name='gender' value='Female'/><label htmlFor="female">Female</label>
+              </div>
+            </div>
             <button type='submit' id='btn' disabled={checkValid}>{ checkEditItem ? 'Save Item' : 'Sign up' }</button>
         </form>
+      </div>
+      <div className='select-container'>
+      <select onChange={(e)=>setFilter(e.target.value)}>
+          <option value=''>
+            Total
+          </option>
+          <option value='Male'>
+            Male
+          </option>
+          <option value='Female'>
+            Female
+          </option>
+        </select>
       </div>
       <table>
         <thead>
@@ -106,17 +145,29 @@ function App() {
             <th>Email</th>
             <th>Username</th>
             <th>Password</th>
+            <th>Gender</th>
           </tr>
         </thead>
         <tbody>
-          {row.map((e,index)=>{
+        {/* if(filter === ''){
+          return true
+        }else{
+          if(filter === 'e.gender'){
+            return true
+          }
+          else{
+            return false
+          }
+        } */}
+        {row.filter(e => filter === "" ? true : filter === e.gender ? true : false).map((e,index)=>{
             return(
               <tr key={index}>
                 <th>{e.email}</th>
                 <th>{e.username}</th>
                 <th>{e.password}</th>
-                <button onClick={()=>editItem(e.id)} >Edit</button>
-                <button onClick={()=>removeItem(e.id)}>Delete</button>
+                <th>{e.gender}</th>
+                <th onClick={()=>editItem(e.id)} >Edit</th>
+                <th onClick={()=>removeItem(e.id)}>Delete</th>
               </tr>
             )
           })}

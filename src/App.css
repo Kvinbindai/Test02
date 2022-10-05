@@ -41,3 +41,17 @@ th{
   width: 200px;
   border: 2px solid rgb(255, 255, 255);
 }
+.gender{
+  display: flex;
+  margin-bottom: 20px;
+}
+.select-container{
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+select{
+  padding: 10px;
+  border: none;
+  border-radius: 10px ;
+}
